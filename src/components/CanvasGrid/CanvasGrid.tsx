@@ -32,9 +32,10 @@ const CanvasGrid: React.FC<CanvasProps> = (props) => {
       ctx.lineWidth = 1;
 
       ctx.stroke();
-      ctx.translate(-0.5, -0.5); // Reset the translation
+      // Reset the translation
+      ctx.translate(-0.5, -0.5);
     }
-  }, [cellSize]);
+  }, [cellSize, sideSize]);
 
   return <canvas width={sideSize} height={sideSize} style={styles} ref={canvasRef} />;
 };
