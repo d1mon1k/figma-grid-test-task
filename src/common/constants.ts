@@ -1,4 +1,7 @@
-export const INITIAL_CELL_SIZE = 6;
+export const INITIAL_CELL_SIZE = 20;
+export const MIN_CELL_SIZE = 4;
+export const MAX_CELL_SIZE = 150;
+
 export const INITIAL_RULER_STEP = 50;
 
 export const FIGMA_GRID_WIDTH = 264 * 1000 + 142;
