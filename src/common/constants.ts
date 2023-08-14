@@ -1,8 +1,8 @@
-export const initialCellSize = 6;
-export const initialRulerStep = 50;
+export const INITIAL_CELL_SIZE = 6;
+export const INITIAL_RULER_STEP = 50;
 
-export const figmaGridWidth = 264 * 1000 + 142;
-export const figmaGridHeight = 264 * 1000 + 144;
+export const FIGMA_GRID_WIDTH = 264 * 1000 + 142;
+export const FIGMA_GRID_HEIGHT = 264 * 1000 + 144;
 
-export const rowCount = figmaGridHeight / initialCellSize;
-export const columnCount = figmaGridWidth / initialCellSize;
+export const GRID_ROW_COUNT = FIGMA_GRID_HEIGHT / INITIAL_CELL_SIZE;
+export const GRID_COLUMN_COUNT = FIGMA_GRID_WIDTH / INITIAL_CELL_SIZE;
