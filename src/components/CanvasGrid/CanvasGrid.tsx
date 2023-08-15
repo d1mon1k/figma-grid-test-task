@@ -2,15 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { CanvasProps } from './CanvasGrid.types';
 
 const CanvasGrid: React.FC<CanvasProps> = (props) => {
-  const { styles, cellSize, width, height } = props;
-  const appropriateWidth = width % cellSize === 0 ? width : Math.floor(width + (width % cellSize));
-  const appropriateHeight =
-    height % cellSize === 0 ? height : Math.floor(height + (height % cellSize));
+  const { width, height, styles, cellSize } = props;
 
-  console.log('width % cellSize', width % cellSize);
-  console.log('width / cellSize', width / cellSize);
-  console.log(cellSize);
-  console.log(appropriateWidth);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -44,9 +37,7 @@ const CanvasGrid: React.FC<CanvasProps> = (props) => {
     }
   }, [cellSize, height, width]);
 
-  return (
-    <canvas width={appropriateWidth} height={appropriateHeight} style={styles} ref={canvasRef} />
-  );
+  return <canvas width={width} height={height} style={styles} ref={canvasRef} />;
 };
 
 export default CanvasGrid;
