@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { GridProps } from './Grid.types';
 import styles from './Grid.module.css';
-import { getEstimatedTotalHeight, getEstimatedTotalWidth } from '../../helpers/grid';
 import {
   FIGMA_GRID_HEIGHT,
   FIGMA_GRID_WIDTH,
@@ -18,10 +17,13 @@ const Grid: React.FC<GridProps> = (props) => {
   const containerEl = useRef<HTMLDivElement | null>(null);
   const metaPressed = useMetaPressed();
 
-  // TODO: create logic for getting appropriate canvasSideSize
-  const [canvasSideSize, setCanvasSideSize] = useState(cellSize * 10);
+  const [canvasSideSize, setCanvasSideSize] = useState(cellSize * 500);
+  const [gridDimensions, setGridDimensions] = useState({
+    width: FIGMA_GRID_WIDTH,
+    height: FIGMA_GRID_HEIGHT,
+  });
 
-  // Represents current location of the scroll
+  // Represents current location of the row and column
   const [currentPosition, setCurrentPosition] = useState({
     rowStart: 0,
     columnStart: 0,
@@ -30,22 +32,21 @@ const Grid: React.FC<GridProps> = (props) => {
   });
 
   // Get canvas items to build grid in the current viewport
-  const gridItems = useGridItems({ currentPosition, cellSize, canvasSideSize });
+  const gridItems = useGridItems({
+    currentPosition,
+    cellSize,
+    canvasSideSize,
+    gridDimensions,
+  });
 
   useEffect(() => {
-    const suitableCanvasSideSize =
-      cellSize < 20
-        ? cellSize * 85
-        : cellSize < 40
-        ? cellSize * 45
-        : cellSize < 60
-        ? cellSize * 35
-        : cellSize * 20;
-
-    setCanvasSideSize(suitableCanvasSideSize);
+    setGridDimensions({
+      height: GRID_ROW_COUNT * cellSize,
+      width: GRID_COLUMN_COUNT * cellSize,
+    });
   }, [cellSize]);
 
-  // Place scroll in the middle of the grid
+  // Place initial scroll in the middle of the grid
   useEffect(() => {
     if (containerEl.current) {
       containerEl.current.scrollTo({
@@ -60,11 +61,13 @@ const Grid: React.FC<GridProps> = (props) => {
   const handleWheel = useCallback(
     (event: React.WheelEvent<HTMLDivElement>) => {
       if (metaPressed) {
-        setCellSize((prevCellSize) => {
-          if (event.deltaY > 0) {
-            return prevCellSize < MAX_CELL_SIZE ? prevCellSize + 3 : prevCellSize;
+        setCellSize((previousSize) => {
+          if (event.deltaY > 0 && previousSize < MAX_CELL_SIZE) {
+            return previousSize + 1;
+          } else if (event.deltaY < 0 && previousSize > MIN_CELL_SIZE) {
+            return previousSize - 1;
           } else {
-            return prevCellSize > MIN_CELL_SIZE ? prevCellSize - 3 : prevCellSize;
+            return previousSize;
           }
         });
       }
@@ -100,13 +103,12 @@ const Grid: React.FC<GridProps> = (props) => {
     [canvasSideSize],
   );
 
-  const gridStyle: React.CSSProperties = useMemo(
-    () => ({
-      width: getEstimatedTotalWidth(GRID_COLUMN_COUNT, cellSize),
-      height: getEstimatedTotalHeight(GRID_ROW_COUNT, cellSize),
-    }),
-    [cellSize],
-  );
+  const gridStyle: React.CSSProperties = useMemo(() => {
+    return {
+      width: gridDimensions.width,
+      height: gridDimensions.height,
+    };
+  }, [gridDimensions.height, gridDimensions.width]);
 
   return (
     <div
